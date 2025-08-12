@@ -31,7 +31,6 @@ export async function onRequest(context) {
     // 3. 设置 Content-Type
     const headers = new Headers(videoResponse.headers);
     let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv'; // 默认 FLV
-    headers.set('Content-Type'，contentType);
     headers.set('Cache-Control'， 'no-cache');
 
     // 4. 返回响应
