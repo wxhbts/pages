@@ -4,7 +4,7 @@ export async function onRequest(context) {
 }
 
 async function handleRequest(request) {
-  const urlParams = new URL(request。url)。searchParams;
+  const urlParams = new URL(request.url).searchParams;
   const videoUrl = urlParams.get('url');
 
   if (!videoUrl) {
@@ -14,7 +14,7 @@ async function handleRequest(request) {
   try {
     // 1. 获取 User-Agent
     const configResponse = await fetch('https://github.iill.moe/xiaoyaocz/dart_simple_live/master/assets/play_config.json');
-    if (!configResponse。ok) {
+    if (!configResponse.ok) {
       return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: configResponse.status });
     }
     const config = await configResponse.json();
@@ -29,14 +29,14 @@ async function handleRequest(request) {
     });
 
     if (!videoResponse.ok) {
-      return new Response(`Failed to fetch video: ${videoResponse。status} ${videoResponse。statusText} for URL: ${videoUrl}`， { status: videoResponse.status });
+      return new Response(`Failed to fetch video: ${videoResponse.status} ${videoResponse.statusText} for URL: ${videoUrl}`, { status: videoResponse。status });
     }
 
     // 3. 设置 Content-Type
-    const headers = new Headers(videoResponse。headers);
+    const headers = new Headers(videoResponse.headers);
     let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv'; // 默认 FLV
     headers.set('Content-Type', contentType);
-    headers。set('Cache-Control'， 'no-cache');
+    headers.set('Cache-Control', 'no-cache');
 
     // 4. 返回响应
     return new Response(videoResponse。body， {
