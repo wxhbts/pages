@@ -1,8 +1,8 @@
 {
     "rewrites": [
       {
-        "source": "/huya/live.flv?url=*",
-        "destination": "/huya?url=:splat"
+        "source": "/huya/live.flv",
+        "destination": "/huya"
       }
     ]
 }
