@@ -19,21 +19,32 @@ export async function onRequest({ request, waitUntil }) {
   // 删除 Host 头 (推荐)
   headers.delete('host');
 
-  // === 转发请求头中的 Cookie (非常危险，仅在万不得已时使用) ===
-  // 安全警告： 这是潜在的安全风险！ 仅在你信任客户端或已采取其他安全措施时才使用此方法。
-  // 取消注释以下行以转发 Cookie：
-  // 如果要完全不转发Cookie，请使用 headers.delete('cookie');  并且将上面几行注释掉
+
+    // === 转发请求头中的 Cookie (非常危险，仅在万不得已时使用) ===
+    // 安全警告： 这是潜在的安全风险！ 仅在你信任客户端或已采取其他安全措施时才使用此方法。
+    // 取消注释以下行以转发 Cookie：
+    // 如果要完全不转发Cookie，请使用 headers.delete('cookie');  并且将上面几行注释掉
 
 
     // === 其他请求头的处理  ===
     // 你可以在这里添加或修改其他请求头
     headers.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36');
 
+  // 处理 POST 请求的 body
+  let body = null;
+  if (request.method === "POST") {
+    body = await request.blob(); // 或者使用 request.text() 或 request.arrayBuffer()，根据内容类型选择
+  }
 
   try {
     const response = await fetch(targetUrl, {
-      headers: headers, // 使用原始 headers (包括 cookie)
+      method: request.method, // 转发原始请求方法
+      headers: headers,       // 使用原始 headers (包括 cookie)
+      body: body,             // 转发 body (如果存在)
     });
+
+
+
 
     if (!response.ok) {
       return new Response(response.statusText, { status: response.status });
@@ -50,12 +61,13 @@ export async function onRequest({ request, waitUntil }) {
     newHeaders.set('Pragma', 'no-cache');
     newHeaders.set('Expires', '0');
 
+
     const proxyResponse = new Response(response.body, {
       status: response.status,
       headers: newHeaders,
     });
-    waitUntil(Promise.resolve(proxyResponse));
 
+      waitUntil(Promise.resolve(proxyResponse));
     return proxyResponse;
 
   } catch (error) {
