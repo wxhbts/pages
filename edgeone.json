@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/huya/live.flv?url=*",
-        "destination": "/huya?url=*"
+        "destination": "/huya?url=:splat"
       }
     ]
 }
