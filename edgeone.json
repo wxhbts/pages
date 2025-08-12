@@ -1,8 +1,8 @@
 {
-    "rewrites": [
-      {
-        "source": "/huya.flv",
-        "destination": "/huya"
-      }
-    ]
+  "routes": [
+    {
+      "match": "/huya/live.flv",
+      "src": "/live",
+    }
+  ]
 }
