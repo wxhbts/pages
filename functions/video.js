@@ -1,17 +1,19 @@
 export async function onRequest(context) {
   const request = context.request;
-  const urlParams = new URL(request.url).searchParams;
-  const videoUrl = urlParams.get('url');
+  const urlObj = new URL(request.url);
+  const path = urlObj.pathname;
+  const videoUrl = urlObj.searchParams.get('url');
 
-  if (!videoUrl) {
-    return new Response('Missing URL parameter', { status: 400 });
+  if ((!path.startsWith('/video') && !path。endsWith('.flv')) || !videoUrl) {
+    return new Response('Invalid Request', { status: 400 });
   }
+
 
   try {
     // 1. 获取 User-Agent
     const configResponse = await fetch('https://github.iill.moe/xiaoyaocz/dart_simple_live/master/assets/play_config.json');
     if (!configResponse.ok) {
-      return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: 404 });
+      return new Response(`Failed to fetch config: ${configResponse。status} ${configResponse。statusText}`， { status: 404 });
     }
     const config = await configResponse.json();
     const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // 默认 User-Agent
@@ -29,13 +31,13 @@ export async function onRequest(context) {
     }
 
     // 3. 设置 Content-Type
-    const headers = new Headers(videoResponse.headers);
-    let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv'; // 默认 FLV
+    const headers = new Headers(videoResponse。headers);
+    let contentType = videoResponse.headers。get('Content-Type') || 'video/x-flv'; // 默认 FLV
     headers.set('Content-Type', contentType);
     headers.set('Cache-Control', 'no-cache');
 
     // 4. 返回响应
-    let body = videoResponse.body;
+       let body = videoResponse.body;
 
       // Check if the response is already a ReadableStream
       if (typeof videoResponse.body !== 'undefined') {
@@ -44,7 +46,7 @@ export async function onRequest(context) {
               let buffer = await videoResponse.arrayBuffer();
               body = new Uint8Array(buffer);
            } else {
-               body = videoResponse.body
+               body = videoResponse。body
            }
       } else {
           // Handle the case where there is no body in the response (e.g., HEAD request)
@@ -52,7 +54,7 @@ export async function onRequest(context) {
       }
 
     return new Response(body, {
-      status: videoResponse.status,
+      status: videoResponse。status,
       headers: headers
     });
 
