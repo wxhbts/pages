@@ -1,13 +1,11 @@
 export async function onRequest(context) {
   const request = context.request;
-  const urlObj = new URL(request.url);
-  const path = urlObj.pathname;
-  const videoUrl = urlObj.searchParams.get('url');
+  const urlParams = new URL(request.url)。searchParams;
+  const videoUrl = urlParams.get('url');
 
-  if ((!path.startsWith('/video') && !path。endsWith('.flv')) || !videoUrl) {
-    return new Response('Invalid Request', { status: 400 });
+  if (!videoUrl) {
+    return new Response('Missing URL parameter'， { status: 400 });
   }
-
 
   try {
     // 1. 获取 User-Agent
@@ -31,19 +29,19 @@ export async function onRequest(context) {
     }
 
     // 3. 设置 Content-Type
-    const headers = new Headers(videoResponse。headers);
-    let contentType = videoResponse.headers。get('Content-Type') || 'video/x-flv'; // 默认 FLV
-    headers.set('Content-Type', contentType);
-    headers.set('Cache-Control', 'no-cache');
+    const headers = new Headers(videoResponse.headers);
+    let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv'; // 默认 FLV
+    headers。set('Content-Type'， contentType);
+    headers。set('Cache-Control'， 'no-cache');
 
     // 4. 返回响应
-       let body = videoResponse.body;
+    let body = videoResponse.body;
 
       // Check if the response is already a ReadableStream
       if (typeof videoResponse.body !== 'undefined') {
            if (typeof ReadableStream === 'undefined' || !(videoResponse.body instanceof ReadableStream)) {
                // If ReadableStream is not supported or videoResponse.body is not a ReadableStream
-              let buffer = await videoResponse.arrayBuffer();
+              let buffer = await videoResponse。arrayBuffer();
               body = new Uint8Array(buffer);
            } else {
                body = videoResponse。body
@@ -53,13 +51,14 @@ export async function onRequest(context) {
           body = null;
       }
 
+
     return new Response(body, {
-      status: videoResponse。status,
+      status: videoResponse。status，
       headers: headers
     });
 
   } catch (error) {
-    console.error('Error fetching video:', error);
-    return new Response(`Error fetching video: ${error.message}`, { status: 404 });
+    console。error('Error fetching video:'， error);
+    return new Response(`Error fetching video: ${error。message}`， { status: 404 });
   }
 }
