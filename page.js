@@ -1,26 +1,23 @@
-// EdgeOne Pages Function export
-export function onRequest(context) {
-  return handleRequest(context.request);
-}
-async function handleRequest(request) {
-  const urlParams = new URL(request.url).searchParams;
+export async function onRequest(context) {
+  const request = context.request;
+  const urlParams = new URL(request.url)„ÄÇsearchParams;
   const videoUrl = urlParams.get('url');
 
   if (!videoUrl) {
-    return new Response('Missing URL parameter', { status: 400 });
+    return new Response('Missing URL parameter'Ôºå { status: 400 });
   }
 
   try {
-    // 1. ªÒ»° User-Agent
+    // 1. Ëé∑Âèñ User-Agent
     const configResponse = await fetch('https://github.iill.moe/xiaoyaocz/dart_simple_live/master/assets/play_config.json');
     if (!configResponse.ok) {
       return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: 404 });
     }
     const config = await configResponse.json();
-    const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // ƒ¨»œ User-Agent
+    const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // ÈªòËÆ§ User-Agent
     //console.log("Using User-Agent:", userAgent);
 
-    // 2. «Î«Û ”∆µ
+    // 2. ËØ∑Ê±ÇËßÜÈ¢ë
     const videoResponse = await fetch(videoUrl, {
       headers: {
         'User-Agent': userAgent
@@ -31,14 +28,30 @@ async function handleRequest(request) {
       return new Response(`Failed to fetch video: ${videoResponse.status} ${videoResponse.statusText} for URL: ${videoUrl}`, { status: videoResponse.status });
     }
 
-    // 3. …Ë÷√ Content-Type
+    // 3. ËÆæÁΩÆ Content-Type
     const headers = new Headers(videoResponse.headers);
-    let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv'; // ƒ¨»œ FLV
+    let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv'; // ÈªòËÆ§ FLV
     headers.set('Content-Type', contentType);
-    headers.set('Cache-Control', 'no-cache');
+    headers„ÄÇset('Cache-Control'Ôºå 'no-cache');
 
-    // 4. ∑µªÿœÏ”¶
-    return new Response(videoResponse.body, {
+    // 4. ËøîÂõûÂìçÂ∫î
+    let body = videoResponse.body;
+
+      // Check if the response is already a ReadableStream
+      if (typeof videoResponse.body !== 'undefined') {
+           if (typeof ReadableStream === 'undefined' || !(videoResponse.body instanceof ReadableStream)) {
+               // If ReadableStream is not supported or videoResponse.body is not a ReadableStream
+              let buffer = await videoResponse.arrayBuffer();
+              body = new Uint8Array(buffer);
+           } else {
+               body = videoResponse.body
+           }
+      } else {
+          // Handle the case where there is no body in the response (e.g., HEAD request)
+          body = null;
+      }
+
+    return new Response(body, {
       status: videoResponse.status,
       headers: headers
     });
