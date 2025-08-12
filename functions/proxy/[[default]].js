@@ -14,8 +14,11 @@ export async function onRequest({ request, waitUntil }) {
     return new Response('Invalid "url" parameter', { status: 400 });
   }
 
-  // 创建一个包含原始请求头的对象
+  // 创建一个包含原始Headers的对象
   const headers = new Headers(request.headers);
+
+  // 打印原始请求头
+  console.log("原始Headers:", Object.fromEntries(headers.entries()));  // 使用 Object.fromEntries 转换为对象以便更好地查看
 
   // 删除 Host 头 (通常不需要代理)
   headers.delete('host');
@@ -46,9 +49,9 @@ export async function onRequest({ request, waitUntil }) {
       status: response.status,
       headers: newHeaders,
     });
-
-    waitUntil(Promise.resolve(proxyResponse));
+      waitUntil(Promise.resolve(proxyResponse));
     return proxyResponse;
+
 
 
   } catch (error) {
