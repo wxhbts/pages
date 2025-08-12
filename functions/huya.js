@@ -1,6 +1,6 @@
 // filename: functions/huya.flv.js
 
-export async function onRequest({ request, waitUntil }) { // EdgeOne Pages º¯ÊıÈë¿Ú
+export async function onRequest({ request, waitUntil }) { // EdgeOne Pages å‡½æ•°å…¥å£
 
   const urlParams = new URL(request.url).searchParams;
   const videoUrl = urlParams.get('url');
@@ -10,19 +10,19 @@ export async function onRequest({ request, waitUntil }) { // EdgeOne Pages º¯ÊıÈ
   }
 
   try {
-    // 1. »ñÈ¡ User-Agent £¨Ê¹ÓÃawaitÈ·±£»ñÈ¡³É¹¦£©
+    // 1. è·å– User-Agent ï¼ˆä½¿ç”¨awaitç¡®ä¿è·å–æˆåŠŸï¼‰
     const configResponse = await fetch('https://github.iill.moe/xiaoyaocz/dart_simple_live/master/assets/play_config.json');
 
     if (!configResponse.ok) {
-      console.error(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`); // ¼ÇÂ¼´íÎó
-      return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: 500 });  // ·µ»Ø 500 ´íÎó
+      console.error(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`); // è®°å½•é”™è¯¯
+      return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: 500 });  // è¿”å› 500 é”™è¯¯
     }
 
     const config = await configResponse.json();
-    const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // »ñÈ¡UserAgent
+    const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // è·å–UserAgent
     console.log("Using User-Agent:", userAgent);
 
-    // 2. ÇëÇóÊÓÆµ
+    // 2. è¯·æ±‚è§†é¢‘
     const videoResponse = await fetch(videoUrl, {
       headers: {
         'User-Agent': userAgent
@@ -34,13 +34,13 @@ export async function onRequest({ request, waitUntil }) { // EdgeOne Pages º¯ÊıÈ
       return new Response(`Failed to fetch video: ${videoResponse.status} ${videoResponse.statusText} for URL: ${videoUrl}`, { status: videoResponse.status });
     }
 
-    // 3. ÉèÖÃ Content-Type
+    // 3. è®¾ç½® Content-Type
     const headers = new Headers(videoResponse.headers);
     let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv';
     headers.set('Content-Type', contentType);
-    headers.set('Cache-Control', 'no-cache'); // Ç¿ÖÆ²»»º´æ
+    headers.set('Cache-Control', 'no-cache'); // å¼ºåˆ¶ä¸ç¼“å­˜
 
-    // 4. ·µ»ØÏìÓ¦ (Ê¹ÓÃ stream)
+    // 4. è¿”å›å“åº” (ä½¿ç”¨ stream)
     return new Response(videoResponse.body, {
       status: videoResponse.status,
       headers: headers
@@ -49,6 +49,6 @@ export async function onRequest({ request, waitUntil }) { // EdgeOne Pages º¯ÊıÈ
   } catch (error) {
 
     console.error('Error fetching video:', error);
-    return new Response(`Error fetching video: ${error.message}`, { status: 500 });  // ·µ»Ø 500
+    return new Response(`Error fetching video: ${error.message}`, { status: 500 });  // è¿”å› 500
   }
 }
