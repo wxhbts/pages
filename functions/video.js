@@ -29,7 +29,7 @@ async function handleRequest(request) {
     });
 
     if (!videoResponse.ok) {
-      return new Response(`Failed to fetch video: ${videoResponse.status} ${videoResponse.statusText} for URL: ${videoUrl}`, { status: videoResponse。status });
+      return new Response(`Failed to fetch video: ${videoResponse.status} ${videoResponse.statusText} for URL: ${videoUrl}`, { status: videoResponse.status });
     }
 
     // 3. 设置 Content-Type
@@ -39,8 +39,8 @@ async function handleRequest(request) {
     headers.set('Cache-Control', 'no-cache');
 
     // 4. 返回响应
-    return new Response(videoResponse。body， {
-      status: videoResponse。status,
+    return new Response(videoResponse.body, {
+      status: videoResponse.status,
       headers: headers
     });
 
