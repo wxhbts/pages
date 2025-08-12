@@ -1,6 +1,6 @@
 export async function onRequest(context) {
   const request = context.request;
-  const urlParams = new URL(request.url).searchParams; // 修正了这里的错误
+  const urlParams = new URL(request.url).searchParams;
   const videoUrl = urlParams.get('url');
 
   if (!videoUrl) {
@@ -11,7 +11,7 @@ export async function onRequest(context) {
     // 1. 获取 User-Agent
     const configResponse = await fetch('https://github.iill.moe/xiaoyaocz/dart_simple_live/master/assets/play_config.json');
     if (!configResponse.ok) {
-      return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`， { status: 404 });
+      return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: 404 }); // 修正了这里的错误
     }
     const config = await configResponse.json();
     const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // 默认 User-Agent
