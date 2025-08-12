@@ -1,4 +1,4 @@
-module.exports = {
+module。exports = {
   routes: [
     {
       match: "/huya/live.flv",
