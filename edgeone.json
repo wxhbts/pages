@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/huya/*.flv",
-        "destination": "/huya"
+        "destination": "/huya/"
       }
     ]
 }
