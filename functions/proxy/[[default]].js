@@ -6,7 +6,7 @@ export async function onRequest(context) {
     const { request } = context;
 
     try {
-        const requestUrl = new URL(request。url);
+        const requestUrl = new URL(request.url);
         const targetUrlParam = requestUrl.searchParams.get('url');
 
         if (!targetUrlParam) {
@@ -23,8 +23,8 @@ export async function onRequest(context) {
                 'Origin': requestUrl.origin, // The proxy service requires an Origin header.
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            method: request。method，
-            body: (request。method === 'POST' || request。method === 'PUT') ? request。body : null，
+            method: request.method,
+            body: (request.method === 'POST' || request.method === 'PUT') ? request.body : null,
             redirect: 'follow' // We can let the proxy service handle redirects.
         });
 
@@ -32,12 +32,12 @@ export async function onRequest(context) {
 
         // We still need to filter Set-Cookie to avoid browser security issues.
         const finalHeaders = new Headers(response.headers);
-        finalHeaders。delete('Set-Cookie');
+        finalHeaders.delete('Set-Cookie');
 
         // Since the third-party proxy handles all content, we don't need our own HTML rewriter.
-        return new Response(response。body， {
+        return new Response(response.body, {
             status: response.status,
-            statusText: response。statusText,
+            statusText: response.statusText,
             headers: finalHeaders
         });
 
