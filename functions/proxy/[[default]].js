@@ -13,19 +13,16 @@ export async function onRequest({ request, waitUntil }) {
       return new Response('Invalid "url" parameter', { status: 400 });
     }
 
-    // 创建一个新的 Headers 对象，只包含原始 Cookie header
-    const fetchHeaders = new Headers();
-    const cookie = request.headers.get('cookie');
-    if (cookie) {
-      fetchHeaders.set('cookie', cookie);
-    }
+    const headers = new Headers(request.headers);
+    headers.delete('host');
+    headers.delete('content-length');
 
     // **调试：输出 Cookie**
-    console.log("Passing Cookie:", fetchHeaders.get('cookie'));
+    console.log("Original Cookies:", headers.get('cookie'));
 
     const fetchOptions = {
       method: request.method,
-      headers: fetchHeaders, // 只传递 Cookie header
+      headers: headers,
       redirect: 'manual',
     };
 
