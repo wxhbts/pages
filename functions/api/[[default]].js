@@ -102,10 +102,10 @@ export async function onRequest(context) {
     }
 
     // 处理CORS头
-    responseHeaders.set('Access-Control-Allow-Origin', url.origin);
+    responseHeaders.set('Access-Control-Allow-Origin'， '*');
     responseHeaders.set('Access-Control-Allow-Credentials', 'true');
-    responseHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    responseHeaders.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, New-API-User');
+    responseHeaders.set('Access-Control-Allow-Methods', '*');
+    responseHeaders.set('Access-Control-Allow-Headers', '*');
 
     // OPTIONS请求特殊处理
     if (request.method === 'OPTIONS') {
