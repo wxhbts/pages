@@ -102,7 +102,7 @@ export async function onRequest(context) {
     }
 
     // 处理CORS头
-    responseHeaders.set('Access-Control-Allow-Origin'， '*');
+    responseHeaders.set('Access-Control-Allow-Origin', '*');
     responseHeaders.set('Access-Control-Allow-Credentials', 'true');
     responseHeaders.set('Access-Control-Allow-Methods', '*');
     responseHeaders.set('Access-Control-Allow-Headers', '*');
