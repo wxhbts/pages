@@ -25,7 +25,7 @@ export async function onRequest(context) {
     // 转发原始请求头
     for (const [key, value] of request.headers.entries()) {
       // 排除一些特定的头
-      if (!['host', 'cf-connecting-ip', 'cf-ray', 'x-forwarded-for', 'connection'].includes(key.toLowerCase())) {
+      if (!['host', 'cf-connecting-ip', 'cf-ray', 'x-forwarded-for'].includes(key.toLowerCase())) {
         try {
           headers.set(key, value);
         } catch (e) {
