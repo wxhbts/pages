@@ -9,7 +9,7 @@ export async function onRequest(context) {
   const url = new URL(request.url);
 
   // 获取目标 URL 参数
-  const targetUrlParam = url.searchParams.get('target');
+  const targetUrlParam = url.searchParams.get('url');
 
   if (!targetUrlParam) {
     return new Response("Missing 'target' URL parameter.", { status: 400 });
