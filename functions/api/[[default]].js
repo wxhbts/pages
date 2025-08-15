@@ -126,13 +126,6 @@ export async function onRequest(context) {
       });
     }
 
-    // 获取响应内容类型
-    const contentType = response.headers.get('content-type') || '';
-    console.log(`响应内容类型: ${contentType}`);
-
-    const data = await response.arrayBuffer();
-    console.log(`响应大小: ${data.byteLength} 字节`);
-
     return new Response(data, {
       status: response.status,
       statusText: response.statusText,
