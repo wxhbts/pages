@@ -16,7 +16,9 @@ export async function onRequest({ request, waitUntil }) { // EdgeOne Pages 函�
     // 2. 请求视频
     const videoResponse = await fetch(videoUrl, {
       headers: {
-        'User-Agent': userAgent
+        'User-Agent': userAgent,
+        'Origin': 'https://www.ttinglive.com',
+        'referer': 'https://www.ttinglive.com/'
       }
     });
 
@@ -28,10 +30,6 @@ export async function onRequest({ request, waitUntil }) { // EdgeOne Pages 函�
     // 3. 设置 Content-Type
     const headers = new Headers(videoResponse.headers);
     let contentType = videoResponse.headers.get('Content-Type') || 'video/x-flv';
-    if (url.searchParams.get('name') === 'ttinglive') {
-      headers.set('Origin', 'https://www.ttinglive.com');
-      headers.set('referer', 'https://www.ttinglive.com/');
-    }
     headers.set('Content-Type', contentType);
     headers.set('Cache-Control', 'no-cache'); // 强制不缓存
 
