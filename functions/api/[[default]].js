@@ -1,6 +1,7 @@
 /**
  * EdgeOne Pages 反向代理 - 增强版 (URL 参数传递目标地址)
  * 修复白屏和资源加载问题
+ * 移除HTML, JS, CSS处理
  */
 
 export async function onRequest(context) {
@@ -118,132 +119,14 @@ export async function onRequest(context) {
     const contentType = response.headers.get('content-type') || '';
     console.log(`响应内容类型: ${contentType}`);
 
-    // 根据请求的资源类型处理响应
+    const data = await response.arrayBuffer();
+    console.log(`响应大小: ${data.byteLength} 字节`);
 
-    // 1. HTML响应
-    if (contentType.includes('text/html')) {
-      let htmlContent = await response.text();
-      console.log(`HTML响应大小: ${htmlContent.length} 字符`);
-      console.log(`HTML内容开头: ${htmlContent.substring(0, 100).replace(/\n/g, '↵')}...`);
-
-      // 修复HTML中的绝对路径链接 (通用替换逻辑)
-      const originalOrigin = originUrl.origin;
-      const regexHref = new RegExp(`href=["']${escapeRegExp(originalOrigin)}`, 'g');
-      const regexSrc = new RegExp(`src=["']${escapeRegExp(originalOrigin)}`, 'g');
-      htmlContent = htmlContent.replace(regexHref, 'href="');
-      htmlContent = htmlContent.replace(regexSrc, 'src="');
-
-      return new Response(htmlContent, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
-
-    // 2. JavaScript响应
-    else if (contentType.includes('javascript') || url.pathname.endsWith('.js')) {
-      const jsContent = await response.text();
-      console.log(`JS响应大小: ${jsContent.length} 字符`);
-
-      // 不再修改 Content-Type
-      //responseHeaders.set('Content-Type', 'application/javascript; charset=utf-8');
-
-      return new Response(jsContent, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
-
-    // 3. CSS响应
-    else if (contentType.includes('text/css') || url.pathname.endsWith('.css')) {
-      const cssContent = await response.text();
-      console.log(`CSS响应大小: ${cssContent.length} 字符`);
-
-      // 不再修改 Content-Type
-      //responseHeaders.set('Content-Type', 'text/css; charset=utf-8');
-
-      return new Response(cssContent, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
-
-    // 4. JSON响应
-    else if (contentType.includes('application/json') || url.pathname.includes('/api/') || url.pathname.endsWith('.json')) {
-      const jsonText = await response.text();
-      console.log(`JSON响应大小: ${jsonText.length} 字符`);
-
-      // 确保是有效的JSON
-      try {
-        JSON.parse(jsonText);
-      } catch (e) {
-        console.log(`警告: 响应声称是JSON，但格式不正确: ${e.message}`);
-      }
-
-      // 不再修改 Content-Type
-      //responseHeaders.set('Content-Type', 'application/json; charset=utf-8');
-
-      return new Response(jsonText, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
-
-    // 5. 字体文件
-    else if (['.woff', '.woff2', '.ttf', '.eot', '.otf'].some(ext => url.pathname.toLowerCase().endsWith(ext))) {
-      const fontData = await response.arrayBuffer();
-      console.log(`字体文件响应大小: ${fontData.byteLength} 字节`);
-
-	  //不再修改Content-Type，保留原始返回的
-      // 确保MIME类型正确
-      //if (url.pathname.endsWith('.woff')) responseHeaders.set('Content-Type', 'font/woff');
-      //else if (url.pathname.endsWith('.woff2')) responseHeaders.set('Content-Type', 'font/woff2');
-      //else if (url.pathname.endsWith('.ttf')) responseHeaders.set('Content-Type', 'font/ttf');
-      //else if (url.pathname.endsWith('.eot')) responseHeaders.set('Content-Type', 'application/vnd.ms-fontobject');
-      //else if (url.pathname.endsWith('.otf')) responseHeaders.set('Content-Type', 'font/otf');
-
-      return new Response(fontData, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
-
-    // 6. 图片文件
-    else if (['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'].some(ext => url.pathname.toLowerCase().endsWith(ext))) {
-      const imageData = await response.arrayBuffer();
-      console.log(`图片响应大小: ${imageData.byteLength} 字节`);
-
-	  //不再修改Content-Type，保留原始返回的
-      // 确保MIME类型正确
-      //if (url.pathname.endsWith('.png')) responseHeaders.set('Content-Type', 'image/png');
-      //else if (url.pathname.endsWith('.jpg') || url.pathname.endsWith('.jpeg')) responseHeaders.set('Content-Type', 'image/jpeg');
-      //else if (url.pathname.endsWith('.gif')) responseHeaders.set('Content-Type', 'image/gif');
-      //else if (url.pathname.endsWith('.webp')) responseHeaders.set('Content-Type', 'image/webp');
-      //else if (url.pathname.endsWith('.svg')) responseHeaders.set('Content-Type', 'image/svg+xml');
-      //else if (url.pathname.endsWith('.ico')) responseHeaders.set('Content-Type', 'image/x-icon');
-
-      return new Response(imageData, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
-
-    // 7. 其他所有类型的响应
-    else {
-      const data = await response.arrayBuffer();
-      console.log(`其他类型响应大小: ${data.byteLength} 字节`);
-
-      return new Response(data, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders
-      });
-    }
+    return new Response(data, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: responseHeaders
+    });
 
   } catch (err) {
     console.error(`代理请求失败: ${err.message}`);
@@ -287,9 +170,4 @@ export async function onRequest(context) {
       }
     );
   }
-}
-
-// 帮助函数：转义正则表达式
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
