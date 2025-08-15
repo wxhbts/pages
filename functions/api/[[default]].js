@@ -22,7 +22,17 @@ export async function onRequest(context) {
 
     // 创建发往源站的请求头
     const headers = new Headers();
-
+    if (url.searchParams.get('name') === 'pandalive') {
+      headers.set('Origin', 'https://www.pandalive.co.kr');
+    }
+    if (url.searchParams.get('name') === 'twitch') {
+      headers.set('Origin', 'https://www.twitch.tv');
+      headers.set('referer', 'https://www.twitch.tv/');
+    }
+    if (url.searchParams.get('name') === 'ttinglive') {
+      headers.set('Origin', 'https://www.ttinglive.com');
+      headers.set('referer', 'https://www.ttinglive.com/');
+    }
     // 转发原始请求头
     for (const [key, value] of request.headers.entries()) {
       // 排除一些特定的头
