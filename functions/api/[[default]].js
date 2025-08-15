@@ -126,11 +126,6 @@ export async function onRequest(context) {
       console.log(`HTML响应大小: ${htmlContent.length} 字符`);
       console.log(`HTML内容开头: ${htmlContent.substring(0, 100).replace(/\n/g, '↵')}...`);
 
-      // 确保内容类型正确
-      if (!responseHeaders.has('content-type')) {
-        responseHeaders.set('Content-Type', 'text/html; charset=utf-8');
-      }
-
       // 修复HTML中的绝对路径链接 (通用替换逻辑)
       const originalOrigin = originUrl.origin;
       const regexHref = new RegExp(`href=["']${escapeRegExp(originalOrigin)}`, 'g');
@@ -150,8 +145,8 @@ export async function onRequest(context) {
       const jsContent = await response.text();
       console.log(`JS响应大小: ${jsContent.length} 字符`);
 
-      // 设置正确的内容类型
-      responseHeaders.set('Content-Type', 'application/javascript; charset=utf-8');
+      // 不再修改 Content-Type
+      //responseHeaders.set('Content-Type', 'application/javascript; charset=utf-8');
 
       return new Response(jsContent, {
         status: response.status,
@@ -165,8 +160,8 @@ export async function onRequest(context) {
       const cssContent = await response.text();
       console.log(`CSS响应大小: ${cssContent.length} 字符`);
 
-      // 设置正确的内容类型
-      responseHeaders.set('Content-Type', 'text/css; charset=utf-8');
+      // 不再修改 Content-Type
+      //responseHeaders.set('Content-Type', 'text/css; charset=utf-8');
 
       return new Response(cssContent, {
         status: response.status,
@@ -187,8 +182,8 @@ export async function onRequest(context) {
         console.log(`警告: 响应声称是JSON，但格式不正确: ${e.message}`);
       }
 
-      // 设置正确的内容类型
-      responseHeaders.set('Content-Type', 'application/json; charset=utf-8');
+      // 不再修改 Content-Type
+      //responseHeaders.set('Content-Type', 'application/json; charset=utf-8');
 
       return new Response(jsonText, {
         status: response.status,
@@ -202,12 +197,13 @@ export async function onRequest(context) {
       const fontData = await response.arrayBuffer();
       console.log(`字体文件响应大小: ${fontData.byteLength} 字节`);
 
+	  //不再修改Content-Type，保留原始返回的
       // 确保MIME类型正确
-      if (url.pathname.endsWith('.woff')) responseHeaders.set('Content-Type', 'font/woff');
-      else if (url.pathname.endsWith('.woff2')) responseHeaders.set('Content-Type', 'font/woff2');
-      else if (url.pathname.endsWith('.ttf')) responseHeaders.set('Content-Type', 'font/ttf');
-      else if (url.pathname.endsWith('.eot')) responseHeaders.set('Content-Type', 'application/vnd.ms-fontobject');
-      else if (url.pathname.endsWith('.otf')) responseHeaders.set('Content-Type', 'font/otf');
+      //if (url.pathname.endsWith('.woff')) responseHeaders.set('Content-Type', 'font/woff');
+      //else if (url.pathname.endsWith('.woff2')) responseHeaders.set('Content-Type', 'font/woff2');
+      //else if (url.pathname.endsWith('.ttf')) responseHeaders.set('Content-Type', 'font/ttf');
+      //else if (url.pathname.endsWith('.eot')) responseHeaders.set('Content-Type', 'application/vnd.ms-fontobject');
+      //else if (url.pathname.endsWith('.otf')) responseHeaders.set('Content-Type', 'font/otf');
 
       return new Response(fontData, {
         status: response.status,
@@ -221,13 +217,14 @@ export async function onRequest(context) {
       const imageData = await response.arrayBuffer();
       console.log(`图片响应大小: ${imageData.byteLength} 字节`);
 
+	  //不再修改Content-Type，保留原始返回的
       // 确保MIME类型正确
-      if (url.pathname.endsWith('.png')) responseHeaders.set('Content-Type', 'image/png');
-      else if (url.pathname.endsWith('.jpg') || url.pathname.endsWith('.jpeg')) responseHeaders.set('Content-Type', 'image/jpeg');
-      else if (url.pathname.endsWith('.gif')) responseHeaders.set('Content-Type', 'image/gif');
-      else if (url.pathname.endsWith('.webp')) responseHeaders.set('Content-Type', 'image/webp');
-      else if (url.pathname.endsWith('.svg')) responseHeaders.set('Content-Type', 'image/svg+xml');
-      else if (url.pathname.endsWith('.ico')) responseHeaders.set('Content-Type', 'image/x-icon');
+      //if (url.pathname.endsWith('.png')) responseHeaders.set('Content-Type', 'image/png');
+      //else if (url.pathname.endsWith('.jpg') || url.pathname.endsWith('.jpeg')) responseHeaders.set('Content-Type', 'image/jpeg');
+      //else if (url.pathname.endsWith('.gif')) responseHeaders.set('Content-Type', 'image/gif');
+      //else if (url.pathname.endsWith('.webp')) responseHeaders.set('Content-Type', 'image/webp');
+      //else if (url.pathname.endsWith('.svg')) responseHeaders.set('Content-Type', 'image/svg+xml');
+      //else if (url.pathname.endsWith('.ico')) responseHeaders.set('Content-Type', 'image/x-icon');
 
       return new Response(imageData, {
         status: response.status,
