@@ -49,6 +49,13 @@ export async function onRequest(context) {
       headers.set('Origin', 'https://www.ttinglive.com');
       headers.set('referer', 'https://www.ttinglive.com/');
     }
+    // headers.set('Origin', originUrl.origin); // 如果需要设置 Origin，请取消注释
+
+    // 判断是否有Cookie，并打印日志
+    const cookies = request.headers.get('cookie');
+    if (cookies) {
+      console.log(`转发Cookie: ${cookies.substring(0, 100)}...`);
+    }
 
     // 创建请求选项
     const requestInit = {
@@ -118,6 +125,13 @@ export async function onRequest(context) {
         headers: responseHeaders
       });
     }
+
+    // 获取响应内容类型
+    const contentType = response.headers.get('content-type') || '';
+    console.log(`响应内容类型: ${contentType}`);
+
+    const data = await response.arrayBuffer();
+    console.log(`响应大小: ${data.byteLength} 字节`);
 
     return new Response(data, {
       status: response.status,
