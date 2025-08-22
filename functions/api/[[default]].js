@@ -4,10 +4,10 @@
 export async function onRequest(context) {
   const request = context.request;
   const url = new URL(request.url);
-  const targetUrlParam = url。searchParams。get('url');
+  const targetUrlParam = url.searchParams.get('url');
 
   if (!targetUrlParam) {
-    return new Response("Missing 'url' parameter."， { status: 400 });
+    return new Response("Missing 'url' parameter.", { status: 400 });
   }
 
   try {
@@ -24,26 +24,26 @@ export async function onRequest(context) {
         try {
           headers.set(key, value);
         } catch (e) {
-          console。warn(`Failed to set header ${key}: ${e。message}`);
+          console.warn(`Failed to set header ${key}: ${e.message}`);
         }
       }
     }
 
-    headers。set('Host'， originUrl.host);
+    headers.set('Host', originUrl.host);
 
     const name = url.searchParams.get('name');
     if (name === 'pandalive') {
       headers.set('Origin', 'https://www.pandalive.co.kr');
     } else if (name === 'twitch') {
       headers.set('Origin', 'https://www.twitch.tv');
-      headers。set('referer'， 'https://www.twitch.tv/');
+      headers.set('referer', 'https://www.twitch.tv/');
     } else if (name === 'ttinglive') {
-      headers。set('Origin'， 'https://www.ttinglive.com');
+      headers.set('Origin', 'https://www.ttinglive.com');
       headers.set('referer', 'https://www.ttinglive.com/');
     }
 
-    if (request.headers。get('cookie')) {
-      console.log(`Forwarding Cookie to ${originUrl。host}`);
+    if (request.headers.get('cookie')) {
+      console.log(`Forwarding Cookie to ${originUrl.host}`);
     }
 
     const requestInit = {
@@ -52,7 +52,7 @@ export async function onRequest(context) {
       redirect: 'follow',
     };
 
-    if (['POST'， 'PUT'， 'PATCH'].includes(request.method)) {
+    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
       try {
         requestInit.body = await request.clone().text();
       } catch (e) {
@@ -61,17 +61,17 @@ export async function onRequest(context) {
       }
     }
 
-    console。log(`Proxying request to: ${targetUrlParam}`);
+    console.log(`Proxying request to: ${targetUrlParam}`);
     const response = await fetch(targetUrlParam, requestInit);
     console.log(`Origin response status: ${response.status} ${response.statusText}`);
 
     const responseHeaders = new Headers();
     const setCookieHeaders = [];
 
-    for (const [key， value] / response.headers.entries()) {
-      if (key。toLowerCase() === 'set-cookie') {
+    for (const [key, value] of response.headers.entries()) {
+      if (key.toLowerCase() === 'set-cookie') {
         setCookieHeaders.push(value);
-      } else if (key。toLowerCase() === 'content-encoding') {
+      } else if (key.toLowerCase() === 'content-encoding') {
         continue; // Skip content-encoding header
       } else {
         try {
