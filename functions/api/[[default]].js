@@ -182,3 +182,26 @@ export async function onRequest(context) {
     );
   }
 }
+async function handleEvent(event) {
+  const { request } = event;
+  const accept = request.headers.get('Accept');
+  const option = { eo: { image: {} } };
+  try {
+      if (accept && accept.includes('image/webp')) {
+        if (option.eo && option.eo.image) { // 确保option.eo.image存在
+            option.eo.image.format = 'webp';
+        } else {
+          console.warn("option.eo or option.eo.image is undefined");
+        }
+      }
+      const response = await fetch(request, option);
+      return response;
+  } catch (error) {
+      console.error("Image optimization failed:", error);
+      return fetch(request); // 返回原始请求
+  }
+}
+addEventListener('fetch', event => {
+  event.passThroughOnException();
+  event.respondWith(handleEvent(event));
+});
