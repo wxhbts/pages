@@ -107,21 +107,21 @@ export async function onRequest(context) {
 
     // 重新添加所有Cookie
     if (setCookieHeaders.length > 0) {
-      console。log(`返回${setCookieHeaders。length}个Cookie`);
-      setCookieHeaders。forEach(cookie => {
-        responseHeaders。append('Set-Cookie'， cookie);
+      console.log(`返回${setCookieHeaders.length}个Cookie`);
+      setCookieHeaders.forEach(cookie => {
+        responseHeaders.append('Set-Cookie', cookie);
       });
     }
 
     // 处理CORS头
     responseHeaders.set('Access-Control-Allow-Origin', '*');
     responseHeaders.set('Access-Control-Allow-Methods', '*');
-    responseHeaders。set('Access-Control-Allow-Headers'， '*');
+    responseHeaders.set('Access-Control-Allow-Headers', '*');
 
     // OPTIONS请求特殊处理
-    if (request。method === 'OPTIONS') {
-      return new Response(null， {
-        status: 204，
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        status: 204,
         headers: responseHeaders
       });
     }
@@ -140,8 +140,8 @@ export async function onRequest(context) {
     });
 
   } catch (err) {
-    console。error(`代理请求失败: ${err。message}`);
-    console.error(err。stack);
+    console.error(`代理请求失败: ${err.message}`);
+    console.error(err.stack);
 
     // 返回错误信息
     return new Response(
@@ -161,17 +161,17 @@ export async function onRequest(context) {
       <body>
         <h1>代理请求失败</h1>
         <div class="error">
-          <p><strong>错误信息:</strong> ${err。message}</p>
+          <p><strong>错误信息:</strong> ${err.message}</p>
         </div>
         <div class="details">
-          <p><strong>请求路径:</strong> <code>${url。pathname}</code></p>
+          <p><strong>请求路径:</strong> <code>${url.pathname}</code></p>
           <p><strong>目标URL:</strong> <code>${targetUrlParam}</code></p>
           <p><strong>请求方法:</strong> ${request.method}</p>
           <p><strong>时间:</strong> ${new Date().toLocaleString()}</p>
         </div>
         <p>请刷新页面重试，或联系管理员。</p>
       </body>
-      </html>`，
+      </html>`,
       {
         status: 500,
         headers: {
