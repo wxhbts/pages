@@ -1,6 +1,0 @@
- "caches": [
-    {
-      "source": "/api/img/*",
-      "cacheTtl": 86400
-    }
-  ]
