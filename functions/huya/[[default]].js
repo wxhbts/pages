@@ -10,17 +10,9 @@ return new Response('Missing URL parameter', { status: 400 });
 }
 
 try {
-    // 1. 获取 User-Agent （使用await确保获取成功）
-    const configResponse = await fetch('https://github.iill.moe/xiaoyaocz/dart_simple_live/master/assets/play_config.json');
+    
+    const userAgent = 'HYSDK(Windows,30000002)_APP(pc_exe&7030003&official)_SDK(trans&2.29.0.5493)'; // 获取UserAgent
 
-    if (!configResponse.ok) {
-      console.error(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`); // 记录错误
-      return new Response(`Failed to fetch config: ${configResponse.status} ${configResponse.statusText}`, { status: 500 });  // 返回 500 错误
-    }
-
-    const config = await configResponse.json();
-    const userAgent = config?.huya?.user_agent || 'HYSDK(Windows, 30000002)_APP(pc_exe&6090007&official)_SDK(trans&2.24.0.5157)'; // 获取UserAgent
-    console.log("Using User-Agent:", userAgent);
 
 // 2. 请求视频
 const videoResponse = await fetch(videoUrl, {
