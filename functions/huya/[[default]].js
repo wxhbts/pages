@@ -11,7 +11,7 @@ return new Response('Missing URL parameter', { status: 400 });
 
 try {
     
-    const userAgent = 'HYSDK(Windows,30000002)_APP(pc_exe&7030003&official)_SDK(trans&2.29.0.5493)'; // 获取UserAgent
+    const userAgent = 'HYSDK(Windows, 30000002)_APP(pc_exe&7060000&official)_SDK(trans&2.32.3.5646)'; // 获取UserAgent
 
 
 // 2. 请求视频
